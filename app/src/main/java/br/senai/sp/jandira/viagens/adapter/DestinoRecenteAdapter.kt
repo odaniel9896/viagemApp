@@ -28,9 +28,9 @@ class DestinoRecenteAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val destinosRecentes = listRecentes[position]
 
-        holder.tvNomeDestino.text = destinosRecentes.nomeDestino
-        holder.tvLocalidade.text = destinosRecentes.localidade
-        holder.tvValor.text = destinosRecentes.descValor
+        holder.tvNomeDestino.text = destinosRecentes.nome
+        holder.tvLocalidade.text = destinosRecentes.nomeCidade
+        holder.tvValor.text = destinosRecentes.valor.toString()
     }
 
     // inner class

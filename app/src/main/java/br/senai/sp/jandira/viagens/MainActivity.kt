@@ -2,10 +2,17 @@ package br.senai.sp.jandira.viagens
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.senai.sp.jandira.viagens.adapter.DestinoRecenteAdapter
+import br.senai.sp.jandira.viagens.api.DestinosRecentesCall
+import br.senai.sp.jandira.viagens.api.RetrofitApi
 import br.senai.sp.jandira.viagens.model.DestinosRecentes
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,23 +30,39 @@ class MainActivity : AppCompatActivity() {
                 LinearLayoutManager.HORIZONTAL, false)
 
         val adapterDestinosRecentes =
-            DestinoRecenteAdapter(setListaDestinosRecentes(), this)
+            DestinoRecenteAdapter(setListaDestinosRecentes()!!, this)
 
         rvDestinosRecentes.adapter = adapterDestinosRecentes
 
     }
 
-    private fun setListaDestinosRecentes() : List<DestinosRecentes> {
+    private fun setListaDestinosRecentes() : List<DestinosRecentes>? {
 
-        val lista = listOf(
-            DestinosRecentes("Porto de Galinhas", "Pernambuco", "R$ 1.500,00"),
-            DestinosRecentes("Cristo Redentor", "Rio de Janeiro", "R$ 600,00"),
-            DestinosRecentes("Praia das Joaquinas", "Santa Catarina", "R$ 800,00"),
-            DestinosRecentes("Gramado", "Rio G. do Sul", "R$ 2.500,00"),
-            DestinosRecentes("Campos do Jordão", "São Paulo", "R$ 500,00"),
-            DestinosRecentes("Porto Seguro", "Bahia", "R$ 500,00"))
+        var destinosRecentes: List<DestinosRecentes>? = listOf<DestinosRecentes>()
 
-        return lista
+        val retrofit = RetrofitApi.getRetrofit()
+        val destinosRecentesCall = retrofit.create(DestinosRecentesCall::class.java)
+
+        val call = destinosRecentesCall.getDestinosRecentes()
+
+        call.enqueue(object : Callback<List<DestinosRecentes>> {
+
+            override fun onFailure(call: Call<List<DestinosRecentes>>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "A conexão falhou!", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(
+                call: Call<List<DestinosRecentes>>,
+                response: Response<List<DestinosRecentes>>
+            ) {
+                destinosRecentes = response.body()
+                Log.i("Teste", destinosRecentes.toString())
+            }
+
+        })
+
+
+        return destinosRecentes
 
     }
 }

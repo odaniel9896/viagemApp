@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "2842962251",
+    "project_id": "viagens-3dfa1",
+    "storage_bucket": "viagens-3dfa1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2842962251:android:4b359c9cee5fa367c7a0ce",
+        "android_client_info": {
+          "package_name": "br.senai.sp.jandira.viagens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2842962251-k23qbtl84kntl4cfktdnvbevbkigakoh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSnu5K0Q6YeXwul0LxGbLWLwvc-_bcSHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2842962251-k23qbtl84kntl4cfktdnvbevbkigakoh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

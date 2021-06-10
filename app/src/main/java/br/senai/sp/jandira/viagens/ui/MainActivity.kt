@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.viagens
+package br.senai.sp.jandira.viagens.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.senai.sp.jandira.viagens.R
 import br.senai.sp.jandira.viagens.adapter.DestinoRecenteAdapter
 import br.senai.sp.jandira.viagens.api.DestinosRecentesCall
 import br.senai.sp.jandira.viagens.api.RetrofitApi
@@ -17,6 +18,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     lateinit var rvDestinosRecentes: RecyclerView
+    lateinit var adapterDestinosRecentes: DestinoRecenteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,16 +31,18 @@ class MainActivity : AppCompatActivity() {
                 this,
                 LinearLayoutManager.HORIZONTAL, false)
 
-        val adapterDestinosRecentes =
-            DestinoRecenteAdapter(setListaDestinosRecentes()!!, this)
+        adapterDestinosRecentes =
+            DestinoRecenteAdapter(this)
 
         rvDestinosRecentes.adapter = adapterDestinosRecentes
 
+        carrgarListaDestinosRecentes()
+
     }
 
-    private fun setListaDestinosRecentes() : List<DestinosRecentes>? {
+    private fun carrgarListaDestinosRecentes() {
 
-        var destinosRecentes: List<DestinosRecentes>? = listOf<DestinosRecentes>()
+        var destinosRecentes: List<DestinosRecentes> = listOf<DestinosRecentes>()
 
         val retrofit = RetrofitApi.getRetrofit()
         val destinosRecentesCall = retrofit.create(DestinosRecentesCall::class.java)
@@ -48,21 +52,16 @@ class MainActivity : AppCompatActivity() {
         call.enqueue(object : Callback<List<DestinosRecentes>> {
 
             override fun onFailure(call: Call<List<DestinosRecentes>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "A conexão falhou!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Ops! Acho que ocorreu um problema.", Toast.LENGTH_SHORT).show()
+                Log.e("ERRO_CONEXAO", t.message.toString())
             }
 
-            override fun onResponse(
-                call: Call<List<DestinosRecentes>>,
-                response: Response<List<DestinosRecentes>>
-            ) {
-                destinosRecentes = response.body()
-                Log.i("Teste", destinosRecentes.toString())
+            override fun onResponse(call: Call<List<DestinosRecentes>>, response: Response<List<DestinosRecentes>>) {
+                destinosRecentes = response.body()!! // Double BANG!!
+                adapterDestinosRecentes.updateListaRecente(destinosRecentes)
             }
 
         })
-
-
-        return destinosRecentes
 
     }
 }

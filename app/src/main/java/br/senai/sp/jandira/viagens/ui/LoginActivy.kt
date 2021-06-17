@@ -1,9 +1,11 @@
 package br.senai.sp.jandira.viagens.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import br.senai.sp.jandira.viagens.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -25,6 +27,7 @@ class LoginActivy : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_activy)
 
+
         btnLogin = findViewById(R.id.sign_in_button)
         btnLogin.setOnClickListener(this)
 
@@ -33,6 +36,8 @@ class LoginActivy : AppCompatActivity(), View.OnClickListener {
             .build()
 
        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
     }
 
     override fun onStart() {
@@ -41,13 +46,14 @@ class LoginActivy : AppCompatActivity(), View.OnClickListener {
         val account = GoogleSignIn.getLastSignedInAccount(this)
 
         if(account != null) {
-            updateUI(account)
+            updateUI()
         }
     }
 
-    private fun updateUI(account: GoogleSignInAccount?) {
+    private fun updateUI() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     override fun onClick(v: View) {
@@ -69,8 +75,16 @@ class LoginActivy : AppCompatActivity(), View.OnClickListener {
             val usuario = task.getResult(ApiException::class.java)
 
             if(usuario != null) {
-                Log.d("xpto", usuario.displayName.toString())
-                Log.d("xpto", usuario.email.toString())
+               val dadosUsuario = getSharedPreferences("dados_usuario", Context.MODE_PRIVATE)
+                val editor = dadosUsuario.edit()
+                editor.putString("display_name", usuario.displayName)
+                editor.putString("email", usuario.email)
+                editor.putString("url_photo", usuario.photoUrl.toString())
+                editor.putString("id", usuario.id)
+
+                editor.apply()
+
+               updateUI()
             }
         }
     }
